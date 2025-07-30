@@ -1,0 +1,37 @@
+import React, { useState } from "react";
+
+function App() {
+  const [channelId, setChannelId] = useState("");
+  const [analytics, setAnalytics] = useState(null);
+
+  const fetchAnalytics = async () => {
+    const res = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&id=${channelId}&key=YOUR_YOUTUBE_API_KEY`
+    );
+    const data = await res.json();
+    setAnalytics(data.items[0]);
+  };
+
+  return (
+    <div style={{ padding: 20 }}>
+      <h1>Mini vidIQ: YouTube Channel Analytics</h1>
+      <input
+        type="text"
+        value={channelId}
+        onChange={(e) => setChannelId(e.target.value)}
+        placeholder="Enter YouTube Channel ID"
+      />
+      <button onClick={fetchAnalytics}>Get Analytics</button>
+      {analytics && (
+        <div style={{ marginTop: 20 }}>
+          <h2>{analytics.snippet.title}</h2>
+          <p>Subscribers: {analytics.statistics.subscriberCount}</p>
+          <p>Views: {analytics.statistics.viewCount}</p>
+          <p>Videos: {analytics.statistics.videoCount}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
